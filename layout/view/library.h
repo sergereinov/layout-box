@@ -62,19 +62,19 @@ struct Library
 		std::string element;
 		std::string text;
 		Params params;
-		std::vector<Elem> childs;
+		std::vector<Elem> children;
 
 		Elem() : parent(0) {} //default
 
-		//debug helpers
+		//runtime helpers
 		Elem *parent;
 		Elem(Elem *p) : parent(p) {}
 		Elem(const char *el, const char *name = 0) : parent(0) { Set(el,name); }
 		Elem& Set(const char *el, const char *name = 0) { element = el; if (name) {params["name"] = name;} return *this; }
 		Elem& P(const char *pvar, const char *pval) { params[pvar] = pval; return *this; }
 		Elem& Text(const char *tx) { text = tx; return *this; }
-		Elem& Child(Elem &el) { childs.push_back(el); childs.rbegin()->parent = this; return *this; } //ugly copy branch
-		Elem& NewChild() { childs.push_back(Elem(this)); return *childs.rbegin(); }
+		Elem& Child(Elem &el) { children.push_back(el); children.rbegin()->parent = this; return *this; } //ugly copy branch
+		Elem& NewChild() { children.push_back(Elem(this)); return *children.rbegin(); }
 		Elem& Parent() { if (parent) return *parent; else return *this; } //ugly parent ref or broken branch
 	};
 

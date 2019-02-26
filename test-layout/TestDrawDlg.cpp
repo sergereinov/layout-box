@@ -65,8 +65,6 @@ public:
 		HPEN hPen = CreatePen(PS_SOLID, 1, COLORREF(0x000000));
 		HPEN hPenGray = CreatePen(PS_DASH, 1, COLORREF(0x808080));
 
-		char t1 = m_strText[0];
-
 		HPEN hOldPen = (HPEN)SelectObject(hDC, hPenGray);
 		DrawRect(hDC, MarginsRef().GetClientOffset(offset), MarginsRef().GetClientSize(GetArea()));
 
@@ -117,11 +115,9 @@ CTestDrawDlg::CTestDrawDlg(CWnd* pParent /*=NULL*/)
 	r1->SetMin(100, 100)->SetMax(200, 200);
 	RectBoxItem *r2 = new RectBoxItem(this, "r2", &m_box);
 	RectBoxItem *r3 = new RectBoxItem(this, "r3", &m_box);
-
 	RectBoxItem *r4 = new RectBoxItem(this, "r4", &m_box);
 	r4->SetWeight(Point::X_Dim, 2.0);
 	RectBoxItem *r5 = new RectBoxItem(this, "r5", &m_box);
-
 	RectBoxItem *r6 = new RectBoxItem(this, "r6", &m_box);
 
 	HBox *h1 = new HBox(&m_box);
@@ -151,8 +147,8 @@ CTestDrawDlg::CTestDrawDlg(CWnd* pParent /*=NULL*/)
 	RectBoxItem *gr3 = new RectBoxItem(this, "gr3", &m_box);
 	gr3->SetMax(100, 100);
 	RectBoxItem *gr4 = new RectBoxItem(this, "gr4", &m_box);
-	//gr4->SetWeight(Point::Y_Dim, 0.5); //wrong!
-	g1->SetRowWeight(3, 0.5); //correct
+	//gr4->SetWeight(Point::Y_Dim, 0.5); //wrong for GridBox!
+	g1->SetRowWeight(3, 0.5); //correct, GridBox use own ruler to calc weights
 
 	g1->Set(gr1, 2, 0);
 	g1->Set(gr2, 1, 1);
@@ -264,7 +260,6 @@ void CTestDrawDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 	int w0 = rw.Width() - rc.Width();
 	int h0 = rw.Height() - rc.Height();
 
-	// TODO: Add your message handler code here and/or call default
 	lpMMI->ptMinTrackSize.x = w0 + (int)(m_box.GetMinArea().D[Point::X_Dim] + 0.5);
 	lpMMI->ptMinTrackSize.y = h0 + (int)(m_box.GetMinArea().D[Point::Y_Dim] + 0.5);
 	if (!Point::IsMaximum(m_box.GetMaxArea().D[Point::X_Dim]))
@@ -279,7 +274,6 @@ void CTestDrawDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CDialog::OnSize(nType, cx, cy);
 
-	// TODO: Add your message handler code here
 	m_box.SetArea(Point::X_Dim, cx);
 	m_box.SetArea(Point::Y_Dim, cy);
 	m_box.UpdateGeometry();

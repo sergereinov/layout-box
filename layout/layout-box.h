@@ -69,7 +69,6 @@ public:
 	bool AutoUpdateMinMax;
 
 protected:
-	double GetNormalizedWeightsCoef(int dimensionIndex, std::vector<BoxItem *> &items);
 	double GetWeightsSum(int dimensionIndex, std::vector<BoxItem *> &items);
 	void AddSorted(std::deque<BoxItem *> &v, BoxItem *p, const int dimensionIndex);
 	void ArrangeItems(std::vector<BoxItem *> &items, bool hasAnyMin, bool hasAnyMax, int dimensionIndex);

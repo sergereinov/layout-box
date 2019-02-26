@@ -33,7 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace layout
 {
 
-//or mb #include <limits> and =numeric_limits<double>::infinity()
+//or mb #include <limits> and use numeric_limits<double>::infinity() or DBL_MAX const
 const double Point::Maximum = 1e302;
 const double Point::MaximumCompare = 1e301;
 //const double Point::DimensionsQuantizationFactor = 0.001;

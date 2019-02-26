@@ -143,34 +143,34 @@ BoxItem* ViewBox::ImplementView(const Params &inheritedParams, Library::Elem &el
 	MergeParams(viewParams, inheritedParams, true);
 	MergeParams(viewParams, elem.params);
 
-	//impl. elem-box & attach childs
+	//impl. elem-box & attach children
 	if (elem.element == "hbox")
 	{
 		HBox *hbox = (HBox *)ApplyDefaultParams(new HBox(this), viewParams);
-		for(size_t i=0; i<elem.childs.size(); i++)
-			hbox->Add(ImplementView(viewParams, elem.childs[i], userParam, lib, nestedViews));
+		for(size_t i=0; i<elem.children.size(); i++)
+			hbox->Add(ImplementView(viewParams, elem.children[i], userParam, lib, nestedViews));
 		return hbox;
 	}
 	if (elem.element == "vbox")
 	{
 		VBox *vbox = (VBox *)ApplyDefaultParams(new VBox(this), viewParams);
-		for(size_t i=0; i<elem.childs.size(); i++)
-			vbox->Add(ImplementView(viewParams, elem.childs[i], userParam, lib, nestedViews));
+		for(size_t i=0; i<elem.children.size(); i++)
+			vbox->Add(ImplementView(viewParams, elem.children[i], userParam, lib, nestedViews));
 		return vbox;
 	}
 	if (elem.element == "sbox")
 	{
 		StackedBox *sbox = (StackedBox *)ApplyDefaultParams(new StackedBox(this), viewParams);
-		for(size_t i=0; i<elem.childs.size(); i++)
-			sbox->Add(ImplementView(viewParams, elem.childs[i], userParam, lib, nestedViews));
+		for(size_t i=0; i<elem.children.size(); i++)
+			sbox->Add(ImplementView(viewParams, elem.children[i], userParam, lib, nestedViews));
 		return sbox;
 	}
 	if (elem.element == "gbox")
 	{
 		GridBox *gbox = (GridBox *)ApplyDefaultParams(new GridBox(this), viewParams);
-		for(size_t i=0; i<elem.childs.size(); i++)
+		for(size_t i=0; i<elem.children.size(); i++)
 		{
-			Library::Elem &child = elem.childs[i];
+			Library::Elem &child = elem.children[i];
 
 			//get grid-pos & grid-span
 			std::vector<int> seqPos, seqSpan;

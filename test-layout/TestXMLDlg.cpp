@@ -44,8 +44,11 @@ BOOL CTestXMLDlg::OnInitDialog()
 	CViewDialog::OnInitDialog();
 	SetDefID(-1);
 
+	//layouts collection
 	const char cXML[] =
 		"<layouts>"
+
+		//'main' view template with <child /> slot
 		"	<vbox name='main' margins='10'>"
 		"		<edit name='title' size=',68' style='readonly;multiline;nohidesel' font='Consolas' font-size='16' font-style='bold;italic'>"
 		""			"It is a period of civil war. Rebel spaceships, striking from a hidden base, have won their first victory against the evil Galactic Empire."
@@ -62,7 +65,9 @@ BOOL CTestXMLDlg::OnInitDialog()
 		"		</hbox>"
 		"	</vbox>"
 		""
-		"	<hbox parent='main' name='selectors' margins='10,18,10,12'>"
+
+		//child context with reference to template: parent='main'
+		"	<hbox name='selectors' parent='main' margins='10,18,10,12'>"
 		"		<list name='list' margins=',1,,' min='160,' style='multiplesel'>"
 		""			"Rebel spaceships\n"
 		""			"Galactic Empire\n"
@@ -90,6 +95,7 @@ BOOL CTestXMLDlg::OnInitDialog()
 		"			</gbox>"
 		"		</vbox>"
 		"	</hbox>"
+
 		"</layouts>"
 		;
 
@@ -98,7 +104,7 @@ BOOL CTestXMLDlg::OnInitDialog()
 
 	//create & implement view
 	DlgViewBox *vb = new DlgViewBox(&m_box);
-	vb->Implement(lib, "selectors", this);	
+	vb->Implement(lib, "selectors", this); //implement entire view via child-to-parent reference
 
 	//set view
 	m_box.Add(vb, true);

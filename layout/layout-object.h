@@ -36,6 +36,41 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace layout
 {
 
+
+/*
+
+LinkedObject is a links container to other LinkedObject objects.
+And its only purpose is to properly delete all linked objects.
+
+Usage scenario:
+
+//----------------------------------------------
+#include <layout/layout-object.h>
+using namespace layout;
+class MyObject : public LinkedObject
+{
+	LINKED_OBJECT_DELETE_METHOD
+public:
+	MyObject() {}
+	MyObject(LinkedObject *pOwner) : LinkedObject(pOwner) {}
+};
+
+void main()
+{
+	MyObject obj; //main object with controlled life cycle
+	MyObject *p1 = new MyObject(&obj); //create ptr & register into 'obj'
+	MyObject *p2 = new MyObject(&obj); //creates other ptr & register into 'obj' it too
+	//..
+	//doing cool stuff and forget about p1 and p2 pointers
+	//..
+	return; //destroying 'obj' lead to delete all registered pointers
+}
+//----------------------------------------------
+
+*/
+
+
+
 //avoiding virtual destructor for no reason actually
 #define LINKED_OBJECT_DELETE_METHOD virtual void DeleteThis() { delete this; }
 
