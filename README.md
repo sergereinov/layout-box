@@ -299,5 +299,5 @@ Using C++98/2003.
 
 Dependencies:
 - for layout: `std::set`, `std::vector`, `std::deque`
-- for layout/view, library и xml-reader: `std::map`, `std::string`, tinyxml2
+- for layout/view, library and xml-reader: `std::map`, `std::string`, tinyxml2
 - for mfc, ViewDialog: MFC, Windows
