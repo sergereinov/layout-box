@@ -14,7 +14,7 @@ Examples:
 
 Other examples: see the `other/test-layout` project for more complex examples. 
 
-[System requirements](#system-requirements) 
+[Dependencies](#dependencies) 
 
 ## layout::HBox
 ```c++
@@ -291,7 +291,7 @@ deleting MyObject
 ## Other examples
 See the `other/test-layout` project for more complex examples.
 
-## System requirements
+## Dependencies
 
 Tested under Visual Studio 2008. 
 
