@@ -144,6 +144,10 @@ public:
 	inline void SetRowWeight(size_t row, double value) { SetRulerWeight(row, m_rowDimension, value); }
 	inline void SetColumnWeight(size_t column, double value) { SetRulerWeight(column, m_columnDimension, value); }
 
+	inline size_t GetRowsCount() const { return m_rowsCount; }
+	inline size_t GetColumnsCount() const { return m_columnsCount; }
+	bool HasItem(size_t row, size_t column) const;
+
 protected:
 	void InitGrid();
 
@@ -153,7 +157,7 @@ protected:
 	virtual void SetSizeForItem(BoxItem *item, int dimensionIndex, double value) { item->SetArea(dimensionIndex, value); }
 	virtual double GetWeightForItem(BoxItem *item, int dimensionIndex) { return item->GetWeight().D[dimensionIndex]; }
 
-	inline size_t IndexOf(size_t row, size_t column) { return row * m_columnsCount + column; }
+	inline size_t IndexOf(size_t row, size_t column) const { return row * m_columnsCount + column; }
 	size_t PrepareIndex(size_t row, size_t column, size_t rowSpan, size_t columnSpan);
 
 	void SetRulerWeight(size_t rulerIndex, int dimensionIndex, double value);
