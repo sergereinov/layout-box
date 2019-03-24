@@ -1,112 +1,303 @@
 # layout-box - simple & abstract layout manager
 
-Простой абстрактный layout manager. _Прототип._
+* No need a GUI.
+* No framework required (use your favorite one or none at all).
+* Any OS.
+* Any platform.
 
-Layout manager это система автоматического размещения элементов внутри других элементов. Каждый из вложенных элементов получает такие координаты и размер, чтобы вместе с соседями наиболее полезно занять отведенное им пространство. А при изменении размеров окна менеджер следит за тем, чтобы интерфейс оставался удобным.
+Examples:
+- [layout::HBox](#layouthbox)
+- [layout::VBox](#layoutvbox)
+- [layout::GridBox](#layoutgridbox)
+- [layout::StackedBox](#layoutstackedbox)
+- [Linked objects](#linked-objects)
 
-![TestMFCControls](/images/TestMFCControls-vh.jpg)
-<details>
-  <summary>Анимация</summary>
-  
-  ![TestMFCControls](/images/TestMFCControls.gif)
-</details>
+Other examples: see the `other/test-layout` project for more complex examples. 
 
-## Оглавление
-- [О проекте](#о-проекте)
-- [Сразу к делу - содержание](#содержание)
-- [Рекомендации](#рекомендации)
-- [Системные требования](#системные-требования)
+[System requirements](#system-requirements) 
 
-
-## О проекте
-Целевая группа: встраиваемые решения с ограниченными параметрами. 
-
-При разработке встраиваемых систем иногда приходится сталкиваться с аппаратными или проектными ограничениями. И выбирая GUI-фреймворк или операционную платформу надо искать баланс между функциональностью и компактностью решения. А тем более, когда допускается разработка собственных графических библиотек - проблема размещения элементов интерфейса может оказаться существенной. 
-
-И каждый раз появляются вопросы: а действительно ли для пользовательского интерфейса надо подключать к микропроекту технологии HTML или Qt? Или поискать менее распространенные, менее проверенные, но и менее требовательные решения? Или реализовать графическую UI-подсистему собственными силами? 
-
-Можно разделить проблему на части. Отделить задачу размещения элементов в контейнере (на экране) от всех остальных требований - графической подсистемы, объектно-управляемого жизненного цикла приложения и т.п. То есть убрать из задачи все лишнее - контролы, обработчики событий, глобальные GUI-объекты - все это можно реализовать отдельно или взять готовое, но уже с меньшими требованиями к функциональности. 
-
-Таким образом, можно сформулировать требования для абстрактного и по возможности простого компоновщика. И получить гибкое и совместимое решение. Или, по крайней мере, получить пищу для размышлений и дополнительные аргументы за и против HTML/Qt и т.п.
-
-## Простой и абстрактный компоновщик 
- 
-**Простой.** Из проекта, по возможности, исключены все лишние сущности и функции, несвойственные основной задаче. Ключевая идея - оставить в проекте только компоновку элементов, вложенных в общий контейнер. Даже координаты размещения в контейнере каждый элемент получает только на самом последнем этапе отображения элементов. Для взаимной компоновки имеют значение только ограничения размера (минимум и максимум) и пропорции размеров элементов относительно друг друга.  
-
-**Абстрактный.** Менеджер компоновки не привязан ни к какой-то конкретной координатной системе, ни к платформе, ни к какому-либо GUI-фреймворку.
-
-Весь layout-box опирается всего на один метод
+## layout::HBox
 ```c++
-void Box::ArrangeItems(std::vector<BoxItem *> &items, … , int dimensionIndex);
-```
-Реализуемый внутри алгоритм получает на вход, строго говоря, список допустимых длин и общую длину отрезка по заданной координате. Для каждого элемента вычисляется такая длина, чтобы она была в границах его минимума и максимума, а сумма всех длин была точно равна общей длине контейнера `Box` по заданной координате.
+#include <iostream>
 
-Не сложно пересобрать и расширить layout-box до количества измерений больше двух. И в той же парадигме управлять распределением длин внутри, например, трехмерного куба в четырехмерном пространстве. Для этого надо переопределить `LAYOUT_POINT_DIMENSIONS_COUNT` (см. layout-types.h) и добавить класс-компоновщик, умеющий использовать дополнительные измерения и способный хранить внутри себя вложенные элементы по рабочим измерениям. Например:
+#include <layout/layout-box.h>
+using namespace layout;
+
+void main()
+{
+	//create container layout::HBox
+	HBox *hbox = new HBox();
+	
+	//create items
+	BoxItem *item1 = new BoxItem(hbox);
+	BoxItem *item2 = new BoxItem(hbox);
+	item2->SetWeight(Point::X_Dim, 2.0); //make item2 2 times bigger than item1
+
+	//add items into container
+	hbox->Add(item1);
+	hbox->Add(item2);
+
+	//set container size and update geometry
+	hbox->SetArea(Size(100.0));
+	hbox->UpdateGeometry();
+
+	//print result
+	std::cout << "item1 size x = " << item1->GetArea().X() << std::endl;
+	std::cout << "item2 size x = " << item2->GetArea().X() << std::endl;
+
+	delete hbox; //delete hbox and all linked items
+}
+```
+Prints
+```
+item1 size x = 33.3333
+item2 size x = 66.6667
+```
+
+
+## layout::VBox
 ```c++
-class D3CubeBox : public Box { /* … */ };
+#include <iostream>
+
+#include <layout/layout-box.h>
+using namespace layout;
+
+void main()
+{
+	//create container layout::VBox
+	VBox *vbox = new VBox();
+	
+	//create items
+	BoxItem *item1 = new BoxItem(vbox);
+	BoxItem *item2 = new BoxItem(vbox);
+	BoxItem *item3 = new BoxItem(vbox);
+
+	item1->SetMinMax(Point::Y_Dim, 10.0, 10.0);
+	item3->SetMinMax(Point::Y_Dim, 20.0, Point::Maximum);
+
+	//add items into container
+	vbox->Add(item1);
+	vbox->Add(item2);
+	vbox->Add(item3);
+	
+	//update vbox minmax by its elements
+	vbox->UpdateMinMax();
+
+	const double test_sizes[] = {100.0, 43.0};
+
+	for(int i = 0; i < sizeof(test_sizes)/sizeof(double); i++)
+	{
+		double sz = test_sizes[i];
+		std::cout << "set size = " << sz << std::endl;
+
+		//set container size and update geometry
+		vbox->SetArea(Size(sz));
+		vbox->UpdateGeometry();
+
+		//print result
+		std::cout << "item1 size y is " << item1->GetArea().Y() << std::endl;
+		std::cout << "item2 size y is " << item2->GetArea().Y() << std::endl;
+		std::cout << "item3 size y is " << item3->GetArea().Y() << std::endl;
+	}
+
+	delete vbox; //delete vbox and all linked items
+}
+```
+Prints
+```
+set size = 100
+item1 size y is 10
+item2 size y is 45
+item3 size y is 45
+set size = 43
+item1 size y is 10
+item2 size y is 13
+item3 size y is 20
 ```
 
-Несмотря на общую идею абстрактности, кое-где “срезаются углы” в сторону более простой конкретики, чтобы сохранить понимание кода на бытовом уровне. В духе “все контролы размещаются внутри 2D-окна, согласно своим минимально и максимально допустимым размерам”.
 
-![TestDrawDlg](/images/TestDrawDlg-h.jpg)
-<details>
-  <summary>Анимация</summary>
-  
-  ![TestDrawDlg](/images/TestDrawDlg.gif)
-</details>
-<br/>
-
-Менеджер layout-box предлагает несколько готовых классов-компоновщиков:
-- `HBox` - горизонтальное размещение элементов
-- `VBox` - вертикальное размещение элементов
-- `GridBox` - размещение элементов в виде двумерной таблицы
-- `StackedBox` - все элементы размещаются поверх друг друга в общем пространстве
-
-Как и в других менеджерах компоновки, классы-компоновщики могут быть добавлены в качестве элемента в другие классы-компоновщики.
-
-Все пользовательские элементы должны наследоваться от класса `BoxItem` и реализовать хотя бы один виртуальный метод:
+## layout::GridBox
 ```c++
-virtual void InvalidateAt(const Point &offset);
+#include <iostream>
+
+#include <layout/layout-box.h>
+using namespace layout;
+
+class MyBoxItem : public BoxItem
+{
+	LINKED_OBJECT_DELETE_METHOD
+public:
+	MyBoxItem(LinkedObject *pOwner) : BoxItem(pOwner) {}
+
+	virtual void InvalidateAt(const Point &offset)
+	{
+		//print result
+		std::cout << "MyBoxItem " 
+			<< "pos(x,y) = (" << offset.X() << "," 	<< offset.Y() << ") "
+			<< "size(x,y) = (" << m_area.X() << "," << m_area.Y() << ") "
+			<< std::endl;
+	}
+};
+
+void main()
+{
+	//create container layout::GridBox
+	GridBox *grid = new GridBox();
+
+	//create items
+	MyBoxItem *item1 = new MyBoxItem(grid);
+	MyBoxItem *item2 = new MyBoxItem(grid);
+	MyBoxItem *item3 = new MyBoxItem(grid);
+
+	//add items into container
+	grid->Set(item1, 0, 0);
+	grid->Set(item2, 1, 1);
+	grid->Set(item3, 2, 0, 1, 2); //spanning on two columns
+
+	//set container size and update geometry
+	grid->SetArea(Size(100.0));
+	grid->UpdateGeometry();
+
+	std::cout << "grid size(x,y) = (" << grid->GetArea().X() << "," << grid->GetArea().Y() << ")" << std::endl;
+
+	//position the container to the point (0.0, 0.0)
+	// and print results via MyBoxItem::InvalidateAt
+	grid->InvalidateAt(Point(0.0));
+
+	//inspect grid metric
+	std::cout << "grid items:" << std::endl;
+	for(size_t r = 0, rc = grid->GetRowsCount(); r < rc; r++)
+	{
+		for(size_t c = 0, cc = grid->GetColumnsCount(); c < cc; c++)
+			std::cout << (grid->HasItem(r, c) ? "item\t" : "null\t");
+		std::cout << std::endl;
+	}
+
+	delete grid; //delete grid and all linked items
+}
 ```
-Через этот метод компоновщик сообщает элементу координаты, в которых он должен себя разместить. Размер элемента на данном этапе уже задан компоновщиком и доступен потомку `BoxItem` как `this->m_area`.
-
-Для управления размерами всего поля компоновки и размерами каждого элемента есть четыре Size-параметра: точный размер, минимальный размер, максимальный размер и коэффициент пропорциональности (многомерный параметр "вес", определяющий относительные размеры элементов).  
-
-В идею менеджера layout-box заложено всего два строгих правила:
-- **Точный размер можно задать только самому внешнему компоновщику.** Все вложенные элементы и другие вложенные компоновщики получат свои размеры автоматически через алгоритм соотнесения размеров по внутренним свойствам элементов (вес/пропорция, минимум и максимум). В любом случае, точный размер каждого вложенного элемента **будет пересчитан** при вызове `UpdateGeometry()` самого внешнего класса-компоновщика.
-- **Параметры минимальный размер и максимальный размер могут быть заданы только для размещаемых пользовательских элементов.** Все минимальные и максимальные размеры компоновщиков (если они содержат элементы, то есть не пустые), включая самый внешний, **будут пересчитаны** при вызове `UpdateMinMax()` самого внешнего компоновщика.
-
-Для лучшего понимания работы layout-box следует всегда помнить два этих правила.
-1. Точный размер всегда задается сверху вниз. Например, только для главного контейнера по размерам окна.
-2. Минимум и максимум может быть только у размещаемого элемента. Например, у Label, Text, Button и т.п.
-
-
-## Содержание
+Prints
+```
+grid size(x,y) = (100,100)
+MyBoxItem pos(x,y) = (0,0) size(x,y) = (50,33.3333)
+MyBoxItem pos(x,y) = (50,33.3333) size(x,y) = (50,33.3333)
+MyBoxItem pos(x,y) = (0,66.6667) size(x,y) = (100,33.3333)
+grid items:
+item    null
+null    item
+item    null
+```
 
 
-- **layout** - основной исходный код layout-box
-- **mfc** - демонстрационный враппер MFC CDialog с подключением dialog view для управления MFC-контролами с простейшим viewmodel-биндингом.
-- **test-layout** - демо MSVS-проект и все примеры.
-- **tinyxml** - подключенный в качестве модуля сторонний git-проект tinyxml2 https://github.com/leethomason/tinyxml2
+## layout::StackedBox
+```c++
+#include <iostream>
+
+#include <layout/layout-box.h>
+using namespace layout;
+
+class MyBoxItem : public BoxItem
+{
+	LINKED_OBJECT_DELETE_METHOD
+public:
+	MyBoxItem(LinkedObject *pOwner) : BoxItem(pOwner) {}
+
+	virtual void InvalidateAt(const Point &offset)
+	{
+		//print result
+		std::cout << "MyBoxItem " 
+			<< "pos(x,y) = (" << offset.X() << "," 	<< offset.Y() << ") "
+			<< "size(x,y) = (" << m_area.X() << "," << m_area.Y() << ") "
+			<< std::endl;
+	}
+};
+
+void main()
+{
+	//create container layout::GridBox
+	StackedBox *stacked = new StackedBox();
+
+	//create items
+	MyBoxItem *item1 = new MyBoxItem(stacked);
+	MyBoxItem *item2 = new MyBoxItem(stacked);
+
+	//add items into container
+	stacked->Add(item1);
+	stacked->Add(item2);
+
+	//set container size and update geometry
+	stacked->SetArea(Size(100.0));
+	stacked->UpdateGeometry();
+
+	//position the container to the point (0.0, 0.0)
+	// and print results via MyBoxItem::InvalidateAt
+	stacked->InvalidateAt(Point(0.0));
+
+	delete stacked; //delete stacked and all linked items
+}
+```
+Prints
+```
+MyBoxItem pos(x,y) = (0,0) size(x,y) = (100,100)
+MyBoxItem pos(x,y) = (0,0) size(x,y) = (100,100)
+```
 
 
-## Рекомендации
+## Linked objects
+```c++
+#include <iostream>
 
-Существует много менеджеров компоновки с разнообразным функционалом и на разных платформах.
-Если нет каких-то особых причин подключать именно этот прототип и если есть возможность использовать типовые фреймворки / встроенные технологии компоновки (например, HTML, QML/QLayout, Tkinter, wxFormBuilder, C# Visual Designer и т.д.), тогда лучше не изобретать велосипед и воспользоваться какой-то стандартной технологией.
+#include <layout/layout-box.h>
+using namespace layout;
 
-Этот проект - прототип. На данный момент он существует как концепция.
-И хотя layout-box вполне работоспособен, приемлемо быстр и даже может показаться удобным - в нем остается еще много ограничений. Кое-где сильно "срезаются углы" ради упрощения картины в целом.
+class MyObject : public BoxItem
+{
+	LINKED_OBJECT_DELETE_METHOD
+public:
+	MyObject(LinkedObject *pOwner) : BoxItem(pOwner)
+	{
+		std::cout << "created MyObject" << std::endl;
+	}
+	~MyObject()
+	{
+		std::cout << "deleting MyObject" << std::endl;
+	}
+};
 
-## Системные требования
+void main()
+{
+	//create container
+	HBox *hbox = new HBox();
 
-Исходный код проверялся под Visual Studio 2008. Используется C++98/2003.  
-Зависимости:
-- для layout: только std-контейнеры такие как `std::set`, `std::vector`, `std::deque`
-- для layout/view, library и xml-reader: `std::map`, `std::string`, tinyxml2
-- для mfc, ViewDialog: MFC, Windows
+	//create items
+	new MyObject(hbox);
+	new MyObject(hbox);
+	new MyObject(hbox);
 
-В явном виде механизм исключений не используется. Исключения могут быть сгенерированы std-контейнерами или другими сторонними библиотеками.
+	//delete container and all linked items
+	delete hbox; 
+}
+```
+Prints
+```
+created MyObject
+created MyObject
+created MyObject
+deleting MyObject
+deleting MyObject
+deleting MyObject
+```
 
-Лицензия на авторский код MIT. Сторонний код и стандартные библиотеки существуют под своими лицензиями.
+## Other examples
+See the `other/test-layout` project for more complex examples.
 
+## System requirements
+
+Tested under Visual Studio 2008. 
+
+Using C++98/2003. 
+
+Dependencies:
+- for layout: `std::set`, `std::vector`, `std::deque`
+- for layout/view, library and xml-reader: `std::map`, `std::string`, tinyxml2
+- for mfc, ViewDialog: MFC, Windows

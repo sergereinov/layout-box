@@ -144,21 +144,33 @@ class Area
 public:
 	Area() : m_maxArea(Point::Maximum), m_weight(1.0) {}
 
+	//-- size
 	inline const Size& GetArea() const { return m_area; }
-	inline const Size& GetMinArea() const { return m_minArea; }
-	inline const Size& GetMaxArea() const { return m_maxArea; }
 	inline void SetArea(int dimensionIndex, double value)
 	{
 		if (Point::IsValidDimension(dimensionIndex))
 			m_area.D[dimensionIndex] = value;
 	}
 	inline void SetArea(const Size& size) {	m_area = size; }
+
+	//-- min & max
+	inline const Size& GetMinArea() const { return m_minArea; }
+	inline const Size& GetMaxArea() const { return m_maxArea; }
+	inline void SetMinMax(int dimensionIndex, double valueMin, double valueMax)
+	{
+		m_minArea.Set(dimensionIndex, valueMin);
+		m_maxArea.Set(dimensionIndex, valueMax);
+	}
+
+	//-- weight
 	inline const Size& GetWeight() const { return m_weight; }
 	inline void SetWeight(int dimensionIndex, double value)
 	{
 		if (Point::IsValidDimension(dimensionIndex))
 			m_weight.D[dimensionIndex] = value;
 	}
+
+	//-- span
 	inline const Span& GetSpan() const { return m_span; }
 	inline void SetSpan(int dimensionIndex, size_t value)
 	{
@@ -166,6 +178,10 @@ public:
 			m_span.S[dimensionIndex] = value;
 	}
 	
+	//-- margins
+	inline const Margins& GetMargins() const { return m_margins; }
+	
+	//work helpers
 	inline bool HasMinimum(int dimensionIndex) const { return (m_minArea.D[dimensionIndex] > 0.0); }
 	inline bool HasMaximum(int dimensionIndex) const { return !Point::IsMaximum(m_maxArea.D[dimensionIndex]); }
 
@@ -190,8 +206,6 @@ public:
 		SetLowestMax(dimensionIndex, other.GetMaxArea());
 	}
 
-	inline const Margins& GetMargins() const { return m_margins; }
-	
 	//shortcuts (omg)
 	inline Margins& MarginsRef() { return m_margins; }
 	inline Size& MinRef() { return m_minArea; }

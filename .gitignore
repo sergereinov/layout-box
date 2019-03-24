@@ -1,5 +1,8 @@
-*/Debug/*
+**/Debug/*
 *.aps
 *.ncb
 *.suo
 *.vcproj.*
+*.exe
+*.ilk
+*.pdb

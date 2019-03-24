@@ -383,6 +383,12 @@ size_t GridBox::PrepareIndex(size_t row, size_t column, size_t rowSpan, size_t c
 	return IndexOf(row, column);
 }
 
+bool GridBox::HasItem(size_t row, size_t column) const
+{
+	size_t pos = IndexOf(row, column);
+	return ((pos < m_Items.size()) && (0L != m_Items[pos]));
+}
+
 void GridBox::SetRulerWeight(size_t rulerIndex, int dimensionIndex, double value)
 {
 	while(m_Ruler.size() <= rulerIndex)
