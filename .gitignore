@@ -3,3 +3,6 @@
 *.ncb
 *.suo
 *.vcproj.*
+*.exe
+*.ilk
+*.pdb
