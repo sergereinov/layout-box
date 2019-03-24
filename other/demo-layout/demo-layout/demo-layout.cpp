@@ -17,6 +17,7 @@ void demo_hbox1();
 void demo_vbox1();
 void demo_gridbox1();
 void demo_stackedbox1();
+void demo_linkedobjects();
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -31,6 +32,9 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	std::cout << "--- demo_stackedbox1 ---" << std::endl;
 	demo_stackedbox1();
+
+	std::cout << "--- demo_linkedobjects ---" << std::endl;
+	demo_linkedobjects();
 
 	return 0;
 }
@@ -81,7 +85,7 @@ void demo_vbox1()
 	//update vbox minmax by its elements
 	vbox->UpdateMinMax();
 
-	const double test_sizes[] = {100.0, 40.0};
+	const double test_sizes[] = {100.0, 43.0};
 
 	for(int i = 0; i < sizeof(test_sizes)/sizeof(double); i++)
 	{
@@ -111,12 +115,8 @@ public:
 	{
 		//print result
 		std::cout << "MyBoxItem " 
-			<< "pos(x,y) = (" 
-			<< offset.X() << "," 
-			<< offset.Y() << ") "
-			<< "size(x,y) = (" 
-			<< m_area.X() << "," 
-			<< m_area.Y() << ") "
+			<< "pos(x,y) = (" << offset.X() << "," 	<< offset.Y() << ") "
+			<< "size(x,y) = (" << m_area.X() << "," << m_area.Y() << ") "
 			<< std::endl;
 	}
 };
@@ -179,5 +179,35 @@ void demo_stackedbox1()
 	// and print results via MyBoxItem::InvalidateAt
 	stacked->InvalidateAt(Point(0.0));
 
-	delete stacked; //delete grid and all linked items
+	delete stacked; //delete stacked and all linked items
 }
+
+
+class MyObject : public BoxItem
+{
+	LINKED_OBJECT_DELETE_METHOD
+public:
+	MyObject(LinkedObject *pOwner) : BoxItem(pOwner)
+	{
+		std::cout << "created MyObject" << std::endl;
+	}
+	~MyObject()
+	{
+		std::cout << "deleting MyObject" << std::endl;
+	}
+};
+
+void demo_linkedobjects()
+{
+	//create container
+	HBox *hbox = new HBox();
+
+	//create items
+	new MyObject(hbox);
+	new MyObject(hbox);
+	new MyObject(hbox);
+
+	//delete container and all linked items
+	delete hbox; 
+}
+
