@@ -176,7 +176,7 @@ void demo_with_composition()
 	//horisontal layout box with buttons
 	HBox *hbox_buttons = new layout::HBox(view);
 	hbox_buttons->Add(yes);
-	hbox_buttons->Add(new layout::BoxItem(view)); //middle greedy filler
+	hbox_buttons->Add(new layout::BoxItem(view)); //middle space filler
 	hbox_buttons->Add(no);
 
 
@@ -197,7 +197,7 @@ void demo_with_composition()
 	view->UpdateGeometry();
 	
 	//draw view into screen_buffer (via TextItem::InvalidateAt)
-	view->InvalidateAt(Point(0)); //at (0.0, 0.0) with size of view (scr_sx, scr_sy)
+	view->InvalidateAt(Point(0)); //at (0.0, 0.0) with size of view (screen_sx, screen_sy)
 
 	//show screen_buffer
 	for(int pos = 0; pos < screen_size; pos += screen_sx)
