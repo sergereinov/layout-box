@@ -4,6 +4,7 @@
 #include "stdafx.h"
 
 #include <iostream>
+#include "composition-demo.h"
 
 #include <layout/layout-box.h>
 using namespace layout;
@@ -35,6 +36,9 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	std::cout << "--- demo_linkedobjects ---" << std::endl;
 	demo_linkedobjects();
+
+	std::cout << "--- demo_with_composition ---" << std::endl;
+	demo_with_composition();
 
 	return 0;
 }
@@ -160,7 +164,7 @@ void demo_gridbox1()
 
 void demo_stackedbox1()
 {
-	//create container layout::GridBox
+	//create container layout::StackedBox
 	StackedBox *stacked = new StackedBox();
 
 	//create items

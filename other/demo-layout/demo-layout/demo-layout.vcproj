@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="demo-layout"
 	ProjectGUID="{9D6E58D6-2054-482C-A96B-F33F2886B9CC}"
 	RootNamespace="demolayout"
@@ -173,6 +173,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\composition-demo.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\demo-layout.cpp"
 				>
 			</File>
@@ -202,6 +206,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\composition-demo.h"
+				>
+			</File>
 			<File
 				RelativePath=".\stdafx.h"
 				>
