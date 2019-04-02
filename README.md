@@ -215,7 +215,7 @@ public:
 
 void main()
 {
-	//create container layout::GridBox
+	//create container layout::StackedBox
 	StackedBox *stacked = new StackedBox();
 
 	//create items
