@@ -104,7 +104,7 @@ BOOL CTestXMLDlg::OnInitDialog()
 
 	//create & implement view
 	DlgViewBox *vb = new DlgViewBox(&m_box);
-	vb->Implement(lib, "selectors", this); //implement entire view via child-to-parent reference
+	vb->Implement(lib, "selectors", this, (CViewController*)this); //implement entire view via child-to-parent reference
 
 	//set view
 	m_box.Add(vb, true);

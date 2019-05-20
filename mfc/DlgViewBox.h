@@ -11,6 +11,7 @@ Original code by Serge Reinov
 #include "../layout/layout-box.h"
 #include "../layout/view/view-box.h"
 #include "ViewDialog.h"
+#include "ViewController.h"
 #include "DlgViewBoxItem.h"
 #include <fonts-cache.h>
 
@@ -23,16 +24,22 @@ public:
 	DlgViewBox() {}
 	DlgViewBox(layout::LinkedObject *pOwner) : layout::view::ViewBox(pOwner) {}
 
-	virtual layout::BoxItem* CreateItem(const std::string &element, const std::string &elemText, const layout::view::Params &params, void *userParam);
+	virtual layout::BoxItem* CreateItem(
+		const std::string &element, 
+		const std::string &elemText, 
+		const layout::view::Params &params);
 
 protected:
+	inline CViewDialog *GetHostDlg() { return (CViewDialog *)m_viewHost; }
+	inline CViewController *GetController() { return (CViewController*)m_viewController; }
+
 	bool ApplyFontParams(DlgViewBoxItem* item, const layout::view::Params &params);
-	DlgViewBoxItem* CreateLabel(const std::string &text, const layout::view::Params &params, CViewDialog *pHostDlg);
-	DlgViewBoxItem* CreateEdit(const std::string &text, const layout::view::Params &params, CViewDialog *pHostDlg);
-	DlgViewBoxItem* CreateGroup(const std::string &text, const layout::view::Params &params, CViewDialog *pHostDlg);
-	DlgViewBoxItem* CreateList(const std::string &text, const layout::view::Params &params, CViewDialog *pHostDlg);
-	DlgViewBoxItem* CreateButton(const std::string &text, const layout::view::Params &params, CViewDialog *pHostDlg);
-	DlgViewBoxItem* CreateRadio(const std::string &text, const layout::view::Params &params, CViewDialog *pHostDlg);
+	DlgViewBoxItem* CreateLabel(const std::string &text, const layout::view::Params &params);
+	DlgViewBoxItem* CreateEdit(const std::string &text, const layout::view::Params &params);
+	DlgViewBoxItem* CreateGroup(const std::string &text, const layout::view::Params &params);
+	DlgViewBoxItem* CreateList(const std::string &text, const layout::view::Params &params);
+	DlgViewBoxItem* CreateButton(const std::string &text, const layout::view::Params &params);
+	DlgViewBoxItem* CreateRadio(const std::string &text, const layout::view::Params &params);
 
 	GDI::CFontsCache m_fontsCahce;
 

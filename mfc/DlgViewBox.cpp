@@ -30,35 +30,33 @@ std::vector<std::string> split(const std::string& s, char delimiter)
 //////////////////////
 
 //virtual
-layout::BoxItem* DlgViewBox::CreateItem(const std::string &element, const std::string &elemText, const layout::view::Params &params, void *userParam)
+layout::BoxItem* DlgViewBox::CreateItem(const std::string &element, const std::string &elemText, const layout::view::Params &params)
 {
-	CViewDialog *pDlg = (CViewDialog*)userParam;
 	DlgViewBoxItem *item = NULL;
-
 
 	if (element == "label")
 	{
-		item = CreateLabel(elemText, params, pDlg);
+		item = CreateLabel(elemText, params);
 	}
 	else if (element == "edit")
 	{
-		item = CreateEdit(elemText, params, pDlg);
+		item = CreateEdit(elemText, params);
 	}
 	else if (element == "group")
 	{
-		item = CreateGroup(elemText, params, pDlg);
+		item = CreateGroup(elemText, params);
 	}
 	else if (element == "list")
 	{
-		item = CreateList(elemText, params, pDlg);
+		item = CreateList(elemText, params);
 	}
 	else if (element == "button")
 	{
-		item = CreateButton(elemText, params, pDlg);
+		item = CreateButton(elemText, params);
 	}
 	else if (element == "radio")
 	{
-		item = CreateRadio(elemText, params, pDlg);
+		item = CreateRadio(elemText, params);
 	}
 
 
@@ -67,13 +65,20 @@ layout::BoxItem* DlgViewBox::CreateItem(const std::string &element, const std::s
 		ApplyDefaultParams(item, params);
 		if (!ApplyFontParams(item, params))
 		{
-			CFont *pFont = pDlg->GetFont();
-			item->m_pCtrl->SetFont(pFont, FALSE);
+			CViewDialog *pDlg = GetHostDlg();
+			if (pDlg)
+			{
+				CFont *pFont = pDlg->GetFont();
+				item->m_pCtrl->SetFont(pFont, FALSE);
+			}
 		}
 
 		std::string name;
 		params.find_value("name", name);
-		pDlg->BindViewModel(element, name, item->m_nID, item->m_pCtrl);
+
+		CViewController *pVC = GetController();
+		if (pVC)
+			pVC->BindViewModel(element, name, item->m_nID, item->m_pCtrl);
 	}
 
 	return item; //item or NULL for unknown element
@@ -122,7 +127,7 @@ bool DlgViewBox::ApplyFontParams(DlgViewBoxItem* item, const layout::view::Param
 	return false;
 }
 
-DlgViewBoxItem* DlgViewBox::CreateLabel(const std::string &text, const lv::Params &params, CViewDialog *pHostDlg)
+DlgViewBoxItem* DlgViewBox::CreateLabel(const std::string &text, const lv::Params &params)
 {
 	DWORD dwStyle = WS_CHILD | WS_VISIBLE;
 	std::string border;
@@ -136,11 +141,11 @@ DlgViewBoxItem* DlgViewBox::CreateLabel(const std::string &text, const lv::Param
 
 	UINT id = DlgViewBox::LAST_ID++;
 	CStatic *label = new CStatic();
-	label->Create(text.c_str(), dwStyle, CRect(0,0,1,1), pHostDlg, id);
+	label->Create(text.c_str(), dwStyle, CRect(0,0,1,1), GetHostDlg(), id);
 	return new DlgViewBoxItem(this, label, id);
 }
 
-DlgViewBoxItem* DlgViewBox::CreateEdit(const std::string &text, const layout::view::Params &params, CViewDialog *pHostDlg)
+DlgViewBoxItem* DlgViewBox::CreateEdit(const std::string &text, const layout::view::Params &params)
 {
 	DWORD dwStyle = WS_CHILD | WS_VISIBLE | WS_BORDER;
 	std::string style;
@@ -156,20 +161,20 @@ DlgViewBoxItem* DlgViewBox::CreateEdit(const std::string &text, const layout::vi
 	
 	UINT id = DlgViewBox::LAST_ID++;
 	CEdit *edit = new CEdit();
-	edit->Create(dwStyle, CRect(0,0,1,1), pHostDlg, id);
+	edit->Create(dwStyle, CRect(0,0,1,1), GetHostDlg(), id);
 	edit->SetWindowText(text.c_str());
 	return new DlgViewBoxItem(this, edit, id);
 }
 
-DlgViewBoxItem* DlgViewBox::CreateGroup(const std::string &text, const layout::view::Params &params, CViewDialog *pHostDlg)
+DlgViewBoxItem* DlgViewBox::CreateGroup(const std::string &text, const layout::view::Params &params)
 {
 	UINT id = DlgViewBox::LAST_ID++;
 	CButton *group = new CButton();
-	group->Create(text.c_str(), WS_CHILD | WS_VISIBLE | BS_GROUPBOX, CRect(0,0,1,1), pHostDlg, id);
+	group->Create(text.c_str(), WS_CHILD | WS_VISIBLE | BS_GROUPBOX, CRect(0,0,1,1), GetHostDlg(), id);
 	return new DlgViewBoxItem(this, group, id);
 }
 
-DlgViewBoxItem* DlgViewBox::CreateList(const std::string &text, const layout::view::Params &params, CViewDialog *pHostDlg)
+DlgViewBoxItem* DlgViewBox::CreateList(const std::string &text, const layout::view::Params &params)
 {
 	DWORD dwStyle = WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_BORDER | LBS_NOTIFY | LBS_NOINTEGRALHEIGHT;
 	std::string style;
@@ -181,26 +186,26 @@ DlgViewBoxItem* DlgViewBox::CreateList(const std::string &text, const layout::vi
 
 	UINT id = DlgViewBox::LAST_ID++;
 	CListBox *list = new CListBox();
-	list->Create(dwStyle, CRect(0,0,1,1), pHostDlg, id);
+	list->Create(dwStyle, CRect(0,0,1,1), GetHostDlg(), id);
 	std::vector<std::string> lines = split(text, '\n');
 	for(size_t i=0; i<lines.size(); i++)
 		list->AddString(lines[i].c_str());
 	return new DlgViewBoxItem(this, list, id);
 }
 
-DlgViewBoxItem* DlgViewBox::CreateButton(const std::string &text, const layout::view::Params &params, CViewDialog *pHostDlg)
+DlgViewBoxItem* DlgViewBox::CreateButton(const std::string &text, const layout::view::Params &params)
 {
 	UINT id = DlgViewBox::LAST_ID++;
 	CButton *button = new CButton();
-	button->Create(text.c_str(), WS_CHILD | WS_VISIBLE, CRect(0,0,1,1), pHostDlg, id);
+	button->Create(text.c_str(), WS_CHILD | WS_VISIBLE, CRect(0,0,1,1), GetHostDlg(), id);
 	return new DlgViewBoxItem(this, button, id);
 }
 
-DlgViewBoxItem* DlgViewBox::CreateRadio(const std::string &text, const layout::view::Params &params, CViewDialog *pHostDlg)
+DlgViewBoxItem* DlgViewBox::CreateRadio(const std::string &text, const layout::view::Params &params)
 {
 	UINT id = DlgViewBox::LAST_ID++;
 	CButton *radio = new CButton();
-	radio->Create(text.c_str(), WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON, CRect(0,0,1,1), pHostDlg, id);
+	radio->Create(text.c_str(), WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON, CRect(0,0,1,1), GetHostDlg(), id);
 	return new DlgViewBoxItem(this, radio, id);
 }
 

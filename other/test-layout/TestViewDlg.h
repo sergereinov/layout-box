@@ -1,10 +1,11 @@
 #pragma once
 
 #include "mfc/ViewDialog.h"
+#include "mfc/ViewController.h"
 
 // CTestViewDlg dialog
 
-class CTestViewDlg : public CViewDialog
+class CTestViewDlg : public CViewDialog, public CViewController
 {
 	DECLARE_DYNAMIC(CTestViewDlg)
 

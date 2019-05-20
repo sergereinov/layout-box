@@ -85,7 +85,7 @@ BOOL CTestViewDlg::OnInitDialog()
 
 	//create & implement view
 	DlgViewBox *vb = new DlgViewBox(&m_box);
-	vb->Implement(lib, "test", this);	
+	vb->Implement(lib, "test", this, (CViewController*)this);	
 
 	//set view
 	m_box.Add(vb, true);

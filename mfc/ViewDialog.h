@@ -19,8 +19,6 @@ public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 
-	virtual void BindViewModel(const std::string &element, const std::string &name, UINT id, CWnd *pCtrl) = 0;
-
 protected:
 	DECLARE_MESSAGE_MAP()
 
