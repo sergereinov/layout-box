@@ -29,7 +29,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 // Dialog
 //
 
-IDD_TESTLAYOUT_DIALOG DIALOGEX 0, 0, 177, 106
+IDD_TESTLAYOUT_DIALOG DIALOGEX 0, 0, 177, 127
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_APPWINDOW
 CAPTION "test-layout"
@@ -39,6 +39,7 @@ BEGIN
     PUSHBUTTON      "2. Test with MFC Controls",IDC_BUTTON_TEST_WITH_MFC,7,35,163,14
     PUSHBUTTON      "3. Test View && Library with MFC Controls",IDC_BUTTON_TEST_VIEW_AND_LIB,7,56,163,14
     PUSHBUTTON      "4. Test View && Library from XML",IDC_BUTTON_TEST_FROM_XML,7,78,163,14
+    PUSHBUTTON      "5. Test with nested lists",IDC_BUTTON_TEST_WITH_NESTED_LISTS,7,100,163,14
 END
 
 IDD_TESTDRAWDLG DIALOGEX 0, 0, 309, 247
@@ -94,7 +95,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 170
         TOPMARGIN, 13
-        BOTTOMMARGIN, 99
+        BOTTOMMARGIN, 120
     END
 
     IDD_TESTDRAWDLG, DIALOG
@@ -143,6 +144,38 @@ END
 LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
 #pragma code_page(1251)
 #endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_TEMPLATE_A14 DIALOGEX 0, 0, 195, 108
+STYLE DS_SETFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "Dialog"
+FONT 14, "Arial", 400, 0, 0xCC
+BEGIN
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_TEMPLATE_A14, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 188
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 101
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////

@@ -228,6 +228,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\TestWithNestedLists.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\TestXMLDlg.cpp"
 				>
 			</File>
@@ -275,6 +279,10 @@
 			</File>
 			<File
 				RelativePath=".\TestViewDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TestWithNestedLists.h"
 				>
 			</File>
 			<File
@@ -428,19 +436,19 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\mfc\ViewController.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\mfc\ViewController.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\mfc\ViewDialog.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\mfc\ViewDialog.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mfc\ViewModel.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mfc\ViewModel.h"
 				>
 			</File>
 		</Filter>

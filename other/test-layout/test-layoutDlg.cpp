@@ -10,6 +10,7 @@
 #include "TestMFCControls.h"
 #include "TestViewDlg.h"
 #include "TestXmlDlg.h"
+#include "TestWithNestedLists.h"
 
 
 #ifdef _DEBUG
@@ -41,6 +42,7 @@ BEGIN_MESSAGE_MAP(CTestLayoutDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_TEST_WITH_MFC, &CTestLayoutDlg::OnBnClickedButtonTestWithMfc)
 	ON_BN_CLICKED(IDC_BUTTON_TEST_VIEW_AND_LIB, &CTestLayoutDlg::OnBnClickedButtonTestViewAndLib)
 	ON_BN_CLICKED(IDC_BUTTON_TEST_FROM_XML, &CTestLayoutDlg::OnBnClickedButtonTestFromXml)
+	ON_BN_CLICKED(IDC_BUTTON_TEST_WITH_NESTED_LISTS, &CTestLayoutDlg::OnBnClickedButtonTestWithNestedLists)
 END_MESSAGE_MAP()
 
 
@@ -119,4 +121,9 @@ void CTestLayoutDlg::OnBnClickedButtonTestFromXml()
 {
 	CTestXMLDlg dlg;
 	dlg.DoModal();
+}
+
+void CTestLayoutDlg::OnBnClickedButtonTestWithNestedLists()
+{
+	TestNestedLists();
 }

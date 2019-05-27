@@ -33,4 +33,5 @@ public:
 	afx_msg void OnBnClickedButtonTestWithMfc();
 	afx_msg void OnBnClickedButtonTestViewAndLib();
 	afx_msg void OnBnClickedButtonTestFromXml();
+	afx_msg void OnBnClickedButtonTestWithNestedLists();
 };
