@@ -46,8 +46,8 @@ class ViewBox : public StackedBox
 {
 	LINKED_OBJECT_DELETE_METHOD
 public:
-	ViewBox() : m_viewHost(0L), m_viewController(0L) {}
-	ViewBox(LinkedObject *pOwner) : StackedBox(pOwner), m_viewHost(0L), m_viewController(0L) {}
+	ViewBox() : m_viewHost(0L) {}
+	ViewBox(LinkedObject *pOwner) : StackedBox(pOwner), m_viewHost(0L) {}
 
 	virtual BoxItem* CreateItem(
 		const std::string &element, 
@@ -55,11 +55,10 @@ public:
 		const Params &params)
 	{ return 0; }
 
-	void Implement(Library &lib, const std::string &viewName, void *viewHost, void *viewController);
+	void Implement(Library &lib, const std::string &viewName, void *viewHost);
 
 protected:
 	void *m_viewHost;
-	void *m_viewController;
 
 	BoxItem* ApplyDefaultParams(BoxItem *item, const Params &params);
 	void MergeParams(Params &target, const Params &params, bool inheritableOnly = false);

@@ -7,6 +7,9 @@ Original code by Serge Reinov
 #pragma once
 
 #include "../layout/layout-box.h"
+#include "../layout/view/library.h"
+#include "DlgViewBoxItem.h"
+#include "ViewModel.h"
 
 class CViewDialog : public CDialog
 {
@@ -16,14 +19,34 @@ public:
 	explicit CViewDialog(UINT nIDTemplate, CWnd* pParent = NULL);
 	virtual ~CViewDialog();
 
+	//pre-init setup
+	void SetupLayout(layout::view::Library *pLibrary, const char *pszLayoutName);
+	void SetModel(CViewModel *pModel);
+
+	//at init step
+	virtual BOOL OnInitDialog();
+	virtual void BindViewModel(DlgViewBoxItem *item);
+
+	//others
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 
 protected:
 	DECLARE_MESSAGE_MAP()
 
+	//items container
 	layout::StackedBox m_box;
 
-	void AfterInitView(); //call in OnInitDialog after m_box.Add(item, true)
+	//library & model references
+	layout::view::Library *m_pLibrary;
+	std::string m_LayoutName;
+	CViewModel *m_pModel;
+
+	//implementers & helpers
+	void ImplementLayout();
+	void AfterInitView(); //call in OnInitDialog after ImplementLayout with m_box.Add(item, true)
 	void OnSizeBox(int cx, int cy);
+
+	//other
+	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 };

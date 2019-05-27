@@ -62,10 +62,11 @@ layout::BoxItem* DlgViewBox::CreateItem(const std::string &element, const std::s
 
 	if (item)
 	{
+		CViewDialog *pDlg = GetHostDlg();
+
 		ApplyDefaultParams(item, params);
 		if (!ApplyFontParams(item, params))
 		{
-			CViewDialog *pDlg = GetHostDlg();
 			if (pDlg)
 			{
 				CFont *pFont = pDlg->GetFont();
@@ -73,12 +74,15 @@ layout::BoxItem* DlgViewBox::CreateItem(const std::string &element, const std::s
 			}
 		}
 
-		std::string name;
-		params.find_value("name", name);
+		item->m_Element = element;
+		item->m_Params = params;
+		params.find_value("name", item->m_Name);
 
-		CViewController *pVC = GetController();
-		if (pVC)
-			pVC->BindViewModel(element, name, item->m_nID, item->m_pCtrl);
+		//CViewController *pVC = GetController();
+		//if (pVC)
+		//	pVC->BindViewModel(item);
+		if (pDlg)
+			pDlg->BindViewModel(item);
 	}
 
 	return item; //item or NULL for unknown element
@@ -147,7 +151,7 @@ DlgViewBoxItem* DlgViewBox::CreateLabel(const std::string &text, const lv::Param
 
 DlgViewBoxItem* DlgViewBox::CreateEdit(const std::string &text, const layout::view::Params &params)
 {
-	DWORD dwStyle = WS_CHILD | WS_VISIBLE | WS_BORDER;
+	DWORD dwStyle = WS_CHILD | WS_VISIBLE | WS_BORDER | WS_TABSTOP;
 	std::string style;
 	if (params.find_value("style", style))
 	{
@@ -158,7 +162,7 @@ DlgViewBoxItem* DlgViewBox::CreateEdit(const std::string &text, const layout::vi
 		if (std::string::npos != style.find("nohidesel"))
 			dwStyle |= ES_NOHIDESEL;
 	}
-	
+
 	UINT id = DlgViewBox::LAST_ID++;
 	CEdit *edit = new CEdit();
 	edit->Create(dwStyle, CRect(0,0,1,1), GetHostDlg(), id);
@@ -176,7 +180,9 @@ DlgViewBoxItem* DlgViewBox::CreateGroup(const std::string &text, const layout::v
 
 DlgViewBoxItem* DlgViewBox::CreateList(const std::string &text, const layout::view::Params &params)
 {
-	DWORD dwStyle = WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_BORDER | LBS_NOTIFY | LBS_NOINTEGRALHEIGHT;
+	DWORD dwStyle = 
+		WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_BORDER | WS_TABSTOP |
+		LBS_NOTIFY | LBS_NOINTEGRALHEIGHT;
 	std::string style;
 	if (params.find_value("style", style))
 	{
@@ -197,7 +203,7 @@ DlgViewBoxItem* DlgViewBox::CreateButton(const std::string &text, const layout::
 {
 	UINT id = DlgViewBox::LAST_ID++;
 	CButton *button = new CButton();
-	button->Create(text.c_str(), WS_CHILD | WS_VISIBLE, CRect(0,0,1,1), GetHostDlg(), id);
+	button->Create(text.c_str(), WS_CHILD | WS_VISIBLE | WS_TABSTOP, CRect(0,0,1,1), GetHostDlg(), id);
 	return new DlgViewBoxItem(this, button, id);
 }
 
@@ -205,7 +211,7 @@ DlgViewBoxItem* DlgViewBox::CreateRadio(const std::string &text, const layout::v
 {
 	UINT id = DlgViewBox::LAST_ID++;
 	CButton *radio = new CButton();
-	radio->Create(text.c_str(), WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON, CRect(0,0,1,1), GetHostDlg(), id);
+	radio->Create(text.c_str(), WS_CHILD | WS_VISIBLE | WS_TABSTOP | BS_AUTORADIOBUTTON, CRect(0,0,1,1), GetHostDlg(), id);
 	return new DlgViewBoxItem(this, radio, id);
 }
 

@@ -11,7 +11,6 @@ Original code by Serge Reinov
 #include "../layout/layout-box.h"
 #include "../layout/view/view-box.h"
 #include "ViewDialog.h"
-#include "ViewController.h"
 #include "DlgViewBoxItem.h"
 #include <fonts-cache.h>
 
@@ -31,7 +30,6 @@ public:
 
 protected:
 	inline CViewDialog *GetHostDlg() { return (CViewDialog *)m_viewHost; }
-	inline CViewController *GetController() { return (CViewController*)m_viewController; }
 
 	bool ApplyFontParams(DlgViewBoxItem* item, const layout::view::Params &params);
 	DlgViewBoxItem* CreateLabel(const std::string &text, const layout::view::Params &params);

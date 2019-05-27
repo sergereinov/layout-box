@@ -6,7 +6,7 @@ Original code by Serge Reinov
 
 #include <stdafx.h>
 #include "ViewDialog.h"
-
+#include "DlgViewBox.h"
 
 using namespace layout;
 
@@ -15,6 +15,8 @@ IMPLEMENT_DYNAMIC(CViewDialog, CDialog)
 
 CViewDialog::CViewDialog(UINT nIDTemplate, CWnd* pParent /*=NULL*/)
 	: CDialog(nIDTemplate, pParent)
+	, m_pLibrary(NULL)
+	, m_pModel(NULL)
 {
 
 }
@@ -57,8 +59,18 @@ void CViewDialog::AfterInitView()
 {
 	//first update geom. & move/size controls
 	CRect r;
-	GetClientRect(r);
-	OnSizeBox(r.Width(), r.Height());
+	GetWindowRect(r);
+
+	//force update min-max via resize window
+	SetWindowPos(0, 0, 0, r.Width(), r.Height(), SWP_NOMOVE|SWP_NOZORDER|SWP_NOACTIVATE);
+
+	//force update box container size
+	CRect c;
+	GetClientRect(c);
+	OnSizeBox(c.Width(), c.Height());
+
+	if(m_pModel)
+		m_pModel->AfterInit();
 }
 
 void CViewDialog::OnSizeBox(int cx, int cy)
@@ -68,3 +80,106 @@ void CViewDialog::OnSizeBox(int cx, int cy)
 	m_box.UpdateGeometry();
 	m_box.InvalidateAt(0.0);
 }
+
+void CViewDialog::ImplementLayout()
+{
+	//implement view chain
+	DlgViewBox *vb = new DlgViewBox(&m_box);
+	vb->Implement(*m_pLibrary, m_LayoutName, this);
+
+	//set view
+	m_box.Add(vb, true);
+}
+
+BOOL CViewDialog::OnInitDialog()
+{
+	CDialog::OnInitDialog();
+
+	if (m_pLibrary && !m_LayoutName.empty())
+	{
+		ImplementLayout();
+		AfterInitView(); //first update geom. & move/size controls
+	}
+
+	return TRUE;
+}
+
+void CViewDialog::BindViewModel(DlgViewBoxItem *item)
+{
+	if(m_pModel)
+	{
+		m_pModel->Bind(item);
+	}
+}
+
+void CViewDialog::SetupLayout(layout::view::Library *pLibrary, const char *pszLayoutName)
+{
+	m_pLibrary = pLibrary;
+	m_LayoutName = pszLayoutName;
+}
+void CViewDialog::SetModel(CViewModel *pModel)
+{
+	m_pModel = pModel;
+}
+
+
+LRESULT CViewDialog::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
+{
+	if (m_pModel != NULL)
+	{
+		if (message == WM_COMMAND)
+		{
+			WORD wCode = HIWORD(wParam);
+			WORD wID = LOWORD(wParam);
+			//HWND hWnd = (HWND)lParam;
+			if (wCode == BN_CLICKED)
+			{
+				if (m_pModel->HasButtons() &&
+					m_pModel->OnClickButton((UINT)wID))
+					return 0;
+			}
+			else if (wCode == LBN_SELCHANGE)
+			{
+				if (m_pModel->HasLists() &&
+					m_pModel->OnListSelChange((UINT)wID))
+					return 0;
+			}
+		}
+	}
+
+	return CDialog::WindowProc(message, wParam, lParam);
+}
+
+/*
+//TODO? or is it better to use CWnd base?
+void CViewDialog::ShowModal()
+{
+	//ref: https://docs.microsoft.com/en-us/windows/desktop/winmsg/window-styles
+	//  +: https://docs.microsoft.com/en-us/windows/desktop/dlgbox/dialog-box-styles
+	const DWORD dwStyle = 
+		WS_POPUP | WS_CAPTION | WS_BORDER | WS_VISIBLE |
+		DS_CENTER | DS_MODALFRAME
+		;
+
+	//ref: https://docs.microsoft.com/en-us/windows/desktop/winmsg/extended-window-styles
+	const DWORD dwExtStyle = 0; //WS_EX_DLGMODALFRAME;
+
+	DLGTEMPLATE t;
+	t.style = dwStyle;
+	t.dwExtendedStyle = dwExtStyle;
+	t.cdit = 0;
+	t.x = t.y = 0;
+	t.cx = t.cy = 200;
+
+	if (InitModalIndirect(&t))
+		DoModal();
+
+
+	//ref: https://devblogs.microsoft.com/oldnewthing/20070521-00/?p=26783
+
+	// ??
+	//use: CreateIndirect (?)
+	// then: CWnd::RunModalLoop
+	return;
+}
+*/

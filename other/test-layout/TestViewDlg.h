@@ -1,11 +1,10 @@
 #pragma once
 
 #include "mfc/ViewDialog.h"
-#include "mfc/ViewController.h"
 
 // CTestViewDlg dialog
 
-class CTestViewDlg : public CViewDialog, public CViewController
+class CTestViewDlg : public CViewDialog
 {
 	DECLARE_DYNAMIC(CTestViewDlg)
 
@@ -16,7 +15,7 @@ public:
 // Dialog Data
 	enum { IDD = IDD_TESTVIEWDLG };
 
-	virtual void BindViewModel(const std::string &elem, const std::string &name, UINT id, CWnd *pCtrl);
+	virtual void BindViewModel(DlgViewBoxItem *item);
 	virtual BOOL OnInitDialog();
 
 protected:

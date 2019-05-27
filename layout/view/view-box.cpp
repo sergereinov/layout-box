@@ -100,10 +100,9 @@ BoxItem* ViewBox::ApplyDefaultParams(BoxItem *item, const Params &params)
 	return item;
 }
 
-void ViewBox::Implement(Library &lib, const std::string &viewName, void *viewHost, void *viewController)
+void ViewBox::Implement(Library &lib, const std::string &viewName, void *viewHost)
 {
 	m_viewHost = viewHost;
-	m_viewController = viewController;
 
 	std::deque<std::string> nestedViews;
 	std::string topViewName = viewName;
