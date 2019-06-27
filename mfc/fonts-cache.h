@@ -11,6 +11,16 @@ Original code by Serge Reinov
 
 #include <WinGDI.h>
 
+
+#ifdef UNICODE
+//TODO: make it CStringW-like result, inline func etc
+#define MAKE_TCHAR(ptr, psz) CA2W _CW_##ptr(psz); const TCHAR *ptr = _CW_##ptr;
+#else
+#define MAKE_TCHAR(ptr, psz) const TCHAR *ptr = psz;
+#endif
+
+
+
 /*allow strncpy*/
 #pragma warning(disable:4996)
 
@@ -63,12 +73,20 @@ namespace GDI
 				(isUnderline ? TRUE : FALSE),
 				(isStrikeout ? TRUE : FALSE),
 				charSet,
+#ifndef WINCE
 				OUT_TT_PRECIS,
+#else
+				OUT_DEFAULT_PRECIS,
+#endif
 				CLIP_DEFAULT_PRECIS,
 				ANTIALIASED_QUALITY,
-				DEFAULT_PITCH | FF_DONTCARE, ""
+				DEFAULT_PITCH | FF_DONTCARE, _T("")
 			};
-			strncpy(lf.lfFaceName, lpszName, sizeof(lf.lfFaceName));
+			//strncpy(lf.lfFaceName, lpszName, sizeof(lf.lfFaceName));
+			{
+				MAKE_TCHAR(ptext, lpszName);
+				_tcsncpy(lf.lfFaceName, ptext, sizeof(lf.lfFaceName)/sizeof(TCHAR));
+			}
 
 			HFONT handle = CreateFontIndirect(&lf);
 			if (0 != handle)

@@ -242,10 +242,6 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\fonts-cache.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Resource.h"
 				>
 			</File>
@@ -433,6 +429,10 @@
 			</File>
 			<File
 				RelativePath="..\..\mfc\DlgViewBoxItem.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mfc\fonts-cache.h"
 				>
 			</File>
 			<File
