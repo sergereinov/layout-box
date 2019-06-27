@@ -7,6 +7,36 @@ Original code by Serge Reinov
 #include <stdafx.h>
 #include "ViewModel.h"
 
+void CViewModel::SetText(DlgViewBoxItem *pItem, LPCTSTR lpszText)
+{
+	if (pItem && pItem->m_pCtrl)
+		pItem->m_pCtrl->SetWindowText(lpszText);
+}
+CString CViewModel::GetText(DlgViewBoxItem *pItem)
+{
+	if (pItem && pItem->m_pCtrl)
+	{
+		CString result;
+		pItem->m_pCtrl->GetWindowText(result);
+		return result;
+	}
+	return _T("");
+}
+void CViewModel::HideItem(DlgViewBoxItem *pItem)
+{
+	if (pItem && pItem->m_pCtrl)
+		pItem->m_pCtrl->ShowWindow(SW_HIDE);
+}
+void CViewModel::ShowItem(DlgViewBoxItem *pItem, LPCTSTR lpszText)
+{
+	if (pItem && pItem->m_pCtrl)
+	{
+		if (lpszText)
+			pItem->m_pCtrl->SetWindowText(lpszText);
+		pItem->m_pCtrl->ShowWindow(SW_SHOW);
+	}
+}
+
 void CViewModelAuto::Bind(DlgViewBoxItem *item)
 {
 	if (!item || item->m_Name.empty())

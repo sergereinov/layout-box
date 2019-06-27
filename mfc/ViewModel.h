@@ -18,10 +18,21 @@ public:
 	//public metrics
 	virtual BOOL HasButtons() { return FALSE; }
 	virtual BOOL HasLists() { return FALSE; }
+	virtual BOOL HasColors() { return FALSE; }
+	virtual BOOL HasKeyDown() { return FALSE; }
 
 	//handlers
 	virtual BOOL OnClickButton(UINT nID) { return FALSE; }
 	virtual BOOL OnListSelChange(UINT nID) { return FALSE; }
+	virtual HBRUSH OnCtlColor(HBRUSH hDefaultBrush, CDC* pDC, CWnd* pWnd, UINT nCtlColor) { return hDefaultBrush; }
+	virtual BOOL OnKeyDown(WORD nVK, BYTE nScanCode) { return FALSE; }
+	//	VK see: https://docs.microsoft.com/en-us/windows/desktop/inputdev/virtual-key-codes
+
+	//common helpers
+	static void SetText(DlgViewBoxItem *pItem, LPCTSTR lpszText);
+	static CString GetText(DlgViewBoxItem *pItem);
+	static void HideItem(DlgViewBoxItem *pItem);
+	static void ShowItem(DlgViewBoxItem *pItem, LPCTSTR lpszText = NULL);
 };
 
 class CViewModelAuto : public CViewModel

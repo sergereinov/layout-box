@@ -26,8 +26,11 @@ CViewDialog::~CViewDialog()
 }
 
 BEGIN_MESSAGE_MAP(CViewDialog, CDialog)
+#ifndef WINCE
 	ON_WM_GETMINMAXINFO()
+#endif
 	ON_WM_SIZE()
+	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 void CViewDialog::OnSize(UINT nType, int cx, int cy)
@@ -36,6 +39,7 @@ void CViewDialog::OnSize(UINT nType, int cx, int cy)
 	CDialog::OnSize(nType, cx, cy);
 }
 
+#ifndef WINCE
 void CViewDialog::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 {
 	//get min/max info from m_box
@@ -54,6 +58,7 @@ void CViewDialog::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 
 	CDialog::OnGetMinMaxInfo(lpMMI);
 }
+#endif
 
 void CViewDialog::AfterInitView()
 {
@@ -150,6 +155,33 @@ LRESULT CViewDialog::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 	return CDialog::WindowProc(message, wParam, lParam);
 }
 
+BOOL CViewDialog::PreTranslateMessage(MSG* pMsg)
+{
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		if (m_pModel->HasKeyDown())
+		{
+			WORD nVK = (WORD)pMsg->wParam;
+			BYTE nScanCode = (BYTE)(pMsg->lParam >> 16);
+			if (m_pModel->OnKeyDown(nVK, nScanCode))
+				return TRUE;
+		}
+	}
+
+	return CDialog::PreTranslateMessage(pMsg);
+}
+
+HBRUSH CViewDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+
+	if ((m_pModel != NULL) &&
+		(m_pModel->HasColors()))
+		return m_pModel->OnCtlColor(hbr, pDC, pWnd, nCtlColor);
+
+	return hbr;
+}
+
 /*
 //TODO? or is it better to use CWnd base?
 void CViewDialog::ShowModal()
@@ -183,3 +215,4 @@ void CViewDialog::ShowModal()
 	return;
 }
 */
+

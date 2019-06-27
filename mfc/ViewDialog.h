@@ -29,7 +29,9 @@ public:
 
 	//others
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+#ifndef WINCE
 	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
+#endif
 
 protected:
 	DECLARE_MESSAGE_MAP()
@@ -49,4 +51,7 @@ protected:
 
 	//other
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+public:
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };
