@@ -52,6 +52,10 @@ public:
 		value = it->second; //copy value
 		return true;
 	}
+	inline bool has_key(const _KT &key)
+	{
+		return (find(key) != end());
+	}
 };
 typedef ParamsMap<std::string, std::string> Params;
 
