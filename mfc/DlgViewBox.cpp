@@ -29,6 +29,7 @@ std::vector<std::string> split(const std::string& s, char delimiter)
 }
 //////////////////////
 
+
 //virtual
 layout::BoxItem* DlgViewBox::CreateItem(const std::string &element, const std::string &elemText, const layout::view::Params &params)
 {
@@ -142,10 +143,23 @@ DlgViewBoxItem* DlgViewBox::CreateLabel(const std::string &text, const lv::Param
 		else
 			dwStyle |= WS_BORDER;
 	}
+	std::string textalign;
+	if (params.find_value("align", textalign))
+	{
+		if (std::string::npos != textalign.find("center"))
+			dwStyle |= SS_CENTER;
+		else if (std::string::npos != textalign.find("right"))
+			dwStyle |= SS_RIGHT;
+
+		if (std::string::npos != textalign.find("mid"))
+			dwStyle |= SS_CENTERIMAGE;
+	}
+
+	MAKE_TCHAR(ptext, text.c_str())
 
 	UINT id = DlgViewBox::LAST_ID++;
 	CStatic *label = new CStatic();
-	label->Create(text.c_str(), dwStyle, CRect(0,0,1,1), GetHostDlg(), id);
+	label->Create(ptext, dwStyle, CRect(0,0,1,1), GetHostDlg(), id);
 	return new DlgViewBoxItem(this, label, id);
 }
 
@@ -163,18 +177,22 @@ DlgViewBoxItem* DlgViewBox::CreateEdit(const std::string &text, const layout::vi
 			dwStyle |= ES_NOHIDESEL;
 	}
 
+	MAKE_TCHAR(ptext, text.c_str())
+
 	UINT id = DlgViewBox::LAST_ID++;
 	CEdit *edit = new CEdit();
 	edit->Create(dwStyle, CRect(0,0,1,1), GetHostDlg(), id);
-	edit->SetWindowText(text.c_str());
+	edit->SetWindowText(ptext);
 	return new DlgViewBoxItem(this, edit, id);
 }
 
 DlgViewBoxItem* DlgViewBox::CreateGroup(const std::string &text, const layout::view::Params &params)
 {
+	MAKE_TCHAR(ptext, text.c_str())
+
 	UINT id = DlgViewBox::LAST_ID++;
 	CButton *group = new CButton();
-	group->Create(text.c_str(), WS_CHILD | WS_VISIBLE | BS_GROUPBOX, CRect(0,0,1,1), GetHostDlg(), id);
+	group->Create(ptext, WS_CHILD | WS_VISIBLE | BS_GROUPBOX, CRect(0,0,1,1), GetHostDlg(), id);
 	return new DlgViewBoxItem(this, group, id);
 }
 
@@ -195,23 +213,30 @@ DlgViewBoxItem* DlgViewBox::CreateList(const std::string &text, const layout::vi
 	list->Create(dwStyle, CRect(0,0,1,1), GetHostDlg(), id);
 	std::vector<std::string> lines = split(text, '\n');
 	for(size_t i=0; i<lines.size(); i++)
-		list->AddString(lines[i].c_str());
+	{
+		MAKE_TCHAR(ptext, lines[i].c_str())
+		list->AddString(ptext);
+	}	
 	return new DlgViewBoxItem(this, list, id);
 }
 
 DlgViewBoxItem* DlgViewBox::CreateButton(const std::string &text, const layout::view::Params &params)
 {
+	MAKE_TCHAR(ptext, text.c_str())
+
 	UINT id = DlgViewBox::LAST_ID++;
 	CButton *button = new CButton();
-	button->Create(text.c_str(), WS_CHILD | WS_VISIBLE | WS_TABSTOP, CRect(0,0,1,1), GetHostDlg(), id);
+	button->Create(ptext, WS_CHILD | WS_VISIBLE | WS_TABSTOP, CRect(0,0,1,1), GetHostDlg(), id);
 	return new DlgViewBoxItem(this, button, id);
 }
 
 DlgViewBoxItem* DlgViewBox::CreateRadio(const std::string &text, const layout::view::Params &params)
 {
+	MAKE_TCHAR(ptext, text.c_str())
+
 	UINT id = DlgViewBox::LAST_ID++;
 	CButton *radio = new CButton();
-	radio->Create(text.c_str(), WS_CHILD | WS_VISIBLE | WS_TABSTOP | BS_AUTORADIOBUTTON, CRect(0,0,1,1), GetHostDlg(), id);
+	radio->Create(ptext, WS_CHILD | WS_VISIBLE | WS_TABSTOP | BS_AUTORADIOBUTTON, CRect(0,0,1,1), GetHostDlg(), id);
 	return new DlgViewBoxItem(this, radio, id);
 }
 

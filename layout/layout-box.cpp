@@ -33,6 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #ifdef _DEBUG
 #include <windows.h>
+#include <tchar.h>
 #endif
 
 //TODO
@@ -125,7 +126,7 @@ void Box::ArrangeItems(std::vector<BoxItem *> &items, bool hasAnyMin, bool hasAn
 #ifdef _DEBUG
 					//else: second time there with the same value => just set min and forget
 					else
-						OutputDebugString("[Box::ArrangeItems] second time there with the same value => just set min and forget\n");
+						OutputDebugString(_T("[Box::ArrangeItems] second time there with the same value => just set min and forget\n"));
 #endif
 
 					had_changes = true;					
@@ -146,7 +147,7 @@ void Box::ArrangeItems(std::vector<BoxItem *> &items, bool hasAnyMin, bool hasAn
 #ifdef _DEBUG
 					//else: second time there with the same value => just set max and forget
 					else
-						OutputDebugString("[Box::ArrangeItems] second time there with the same value => just set max and forget\n");
+						OutputDebugString(_T("[Box::ArrangeItems] second time there with the same value => just set max and forget\n"));
 #endif
 
 					had_changes = true;

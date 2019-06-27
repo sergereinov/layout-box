@@ -12,7 +12,7 @@ Original code by Serge Reinov
 #include "../layout/view/view-box.h"
 #include "ViewDialog.h"
 #include "DlgViewBoxItem.h"
-#include <fonts-cache.h>
+#include "fonts-cache.h"
 
 std::vector<std::string> split(const std::string& s, char delimiter); //see notes in .cpp
 
