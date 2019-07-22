@@ -116,8 +116,16 @@ BOOL CTestXMLDlg::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CTestXMLDlg::BindViewModel(const std::string &elem, const std::string &name, UINT id, CWnd *pCtrl)
+void CTestXMLDlg::BindViewModel(DlgViewBoxItem *item)
 {
+	if (!item)
+		return;
+
+	const std::string &elem = item->m_Element;
+	const std::string &name = item->m_Name;
+	const UINT id = item->m_nID;
+	const CWnd *pCtrl = item->m_pCtrl;
+
 	if (elem == "edit")
 	{
 		if (name == "title")

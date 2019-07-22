@@ -85,7 +85,7 @@ BOOL CTestViewDlg::OnInitDialog()
 
 	//create & implement view
 	DlgViewBox *vb = new DlgViewBox(&m_box);
-	vb->Implement(lib, "test", this);	
+	vb->Implement(lib, "test", this);
 
 	//set view
 	m_box.Add(vb, true);
@@ -97,8 +97,16 @@ BOOL CTestViewDlg::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CTestViewDlg::BindViewModel(const std::string &elem, const std::string &name, UINT id, CWnd *pCtrl)
+void CTestViewDlg::BindViewModel(DlgViewBoxItem *item)
 {
+	if (!item)
+		return;
+
+	const std::string &elem = item->m_Element;
+	const std::string &name = item->m_Name;
+	const UINT id = item->m_nID;
+	const CWnd *pCtrl = item->m_pCtrl;
+
 	if (elem == "edit")
 	{
 		if (name == "title")

@@ -100,8 +100,10 @@ BoxItem* ViewBox::ApplyDefaultParams(BoxItem *item, const Params &params)
 	return item;
 }
 
-void ViewBox::Implement(Library &lib, const std::string &viewName, void *userParam)
+void ViewBox::Implement(Library &lib, const std::string &viewName, void *viewHost)
 {
+	m_viewHost = viewHost;
+
 	std::deque<std::string> nestedViews;
 	std::string topViewName = viewName;
 
@@ -116,7 +118,7 @@ void ViewBox::Implement(Library &lib, const std::string &viewName, void *userPar
 		topViewName = it->second;
 	}
 
-	BoxItem* view = ImplementView(Params(), lib.views[topViewName], userParam, lib, nestedViews);
+	BoxItem* view = ImplementView(Params(), lib.views[topViewName], lib, nestedViews);
 	Add(view);
 }
 
@@ -136,7 +138,7 @@ void ViewBox::MergeParams(Params &target, const Params &params, bool inheritable
 	}
 }
 
-BoxItem* ViewBox::ImplementView(const Params &inheritedParams, Library::Elem &elem, void *userParam,
+BoxItem* ViewBox::ImplementView(const Params &inheritedParams, Library::Elem &elem,
 								Library &lib, std::deque<std::string> &nestedViews)
 {
 	Params viewParams;
@@ -148,21 +150,21 @@ BoxItem* ViewBox::ImplementView(const Params &inheritedParams, Library::Elem &el
 	{
 		HBox *hbox = (HBox *)ApplyDefaultParams(new HBox(this), viewParams);
 		for(size_t i=0; i<elem.children.size(); i++)
-			hbox->Add(ImplementView(viewParams, elem.children[i], userParam, lib, nestedViews));
+			hbox->Add(ImplementView(viewParams, elem.children[i], lib, nestedViews));
 		return hbox;
 	}
 	if (elem.element == "vbox")
 	{
 		VBox *vbox = (VBox *)ApplyDefaultParams(new VBox(this), viewParams);
 		for(size_t i=0; i<elem.children.size(); i++)
-			vbox->Add(ImplementView(viewParams, elem.children[i], userParam, lib, nestedViews));
+			vbox->Add(ImplementView(viewParams, elem.children[i], lib, nestedViews));
 		return vbox;
 	}
 	if (elem.element == "sbox")
 	{
 		StackedBox *sbox = (StackedBox *)ApplyDefaultParams(new StackedBox(this), viewParams);
 		for(size_t i=0; i<elem.children.size(); i++)
-			sbox->Add(ImplementView(viewParams, elem.children[i], userParam, lib, nestedViews));
+			sbox->Add(ImplementView(viewParams, elem.children[i], lib, nestedViews));
 		return sbox;
 	}
 	if (elem.element == "gbox")
@@ -186,7 +188,7 @@ BoxItem* ViewBox::ImplementView(const Params &inheritedParams, Library::Elem &el
 			
 			//set child into grid
 			gbox->Set(
-				ImplementView(viewParams, child, userParam, lib, nestedViews),
+				ImplementView(viewParams, child, lib, nestedViews),
 				row, col, rowSpan, colSpan);
 		}
 		return gbox;
@@ -199,7 +201,7 @@ BoxItem* ViewBox::ImplementView(const Params &inheritedParams, Library::Elem &el
 		{
 			std::string childName = *nestedViews.rbegin();
 			nestedViews.pop_back();
-			BoxItem *child = ImplementView(viewParams, lib.views[childName], userParam, lib, nestedViews);
+			BoxItem *child = ImplementView(viewParams, lib.views[childName], lib, nestedViews);
 			return child;
 		}
 	}
@@ -209,7 +211,7 @@ BoxItem* ViewBox::ImplementView(const Params &inheritedParams, Library::Elem &el
 	if (elem.element != "space") //is it not a space-item?
 	{
 		//try create virtual item
-		BoxItem *item = CreateItem(elem.element, elem.text, viewParams, userParam);
+		BoxItem *item = CreateItem(elem.element, elem.text, viewParams);
 		if (item)
 			return item;
 	}

@@ -15,7 +15,7 @@ public:
 // Dialog Data
 	enum { IDD = IDD_TESTVIEWDLG };
 
-	virtual void BindViewModel(const std::string &elem, const std::string &name, UINT id, CWnd *pCtrl);
+	virtual void BindViewModel(DlgViewBoxItem *item);
 	virtual BOOL OnInitDialog();
 
 protected:

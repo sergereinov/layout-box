@@ -72,7 +72,7 @@ bool appendXml(Library &lib, const char *xml)
 		return false;
 
 	XMLElement *root = doc.RootElement(); //probably better use Find("layouts")
-	if (0 != stricmp(root->Name(), "layouts"))
+	if (0 != strcmp(root->Name(), "layouts"))
 		return true; //not layouts
 
 	const XMLElement *xmlElem = root->FirstChildElement();

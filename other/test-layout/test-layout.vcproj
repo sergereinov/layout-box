@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="test-layout"
 	ProjectGUID="{A4363B78-9EBF-4F80-A55E-0D0515C4AB54}"
 	RootNamespace="testlayout"
@@ -228,6 +228,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\TestWithNestedLists.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\TestXMLDlg.cpp"
 				>
 			</File>
@@ -237,10 +241,6 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-			<File
-				RelativePath=".\fonts-cache.h"
-				>
-			</File>
 			<File
 				RelativePath=".\Resource.h"
 				>
@@ -275,6 +275,10 @@
 			</File>
 			<File
 				RelativePath=".\TestViewDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TestWithNestedLists.h"
 				>
 			</File>
 			<File
@@ -428,11 +432,23 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\mfc\fonts-cache.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\mfc\ViewDialog.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\mfc\ViewDialog.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mfc\ViewModel.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mfc\ViewModel.h"
 				>
 			</File>
 		</Filter>

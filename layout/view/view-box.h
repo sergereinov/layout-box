@@ -46,19 +46,28 @@ class ViewBox : public StackedBox
 {
 	LINKED_OBJECT_DELETE_METHOD
 public:
-	ViewBox() {}
-	ViewBox(LinkedObject *pOwner) : StackedBox(pOwner) {}
+	ViewBox() : m_viewHost(0L) {}
+	ViewBox(LinkedObject *pOwner) : StackedBox(pOwner), m_viewHost(0L) {}
 
-	virtual BoxItem* CreateItem(const std::string &element, const std::string &text, const Params &params, void *userParam)
+	virtual BoxItem* CreateItem(
+		const std::string &element, 
+		const std::string &text, 
+		const Params &params)
 	{ return 0; }
 
-	void Implement(Library &lib, const std::string &viewName, void *userParam);
+	void Implement(Library &lib, const std::string &viewName, void *viewHost);
 
 protected:
+	void *m_viewHost;
+
 	BoxItem* ApplyDefaultParams(BoxItem *item, const Params &params);
 	void MergeParams(Params &target, const Params &params, bool inheritableOnly = false);
-	BoxItem* ImplementView(const Params &mergedParentsParams, Library::Elem &elem, void *userParam,
+
+	BoxItem* ImplementView(
+		const Params &mergedParentsParams, 
+		Library::Elem &elem, 
 		Library &lib, std::deque<std::string> &nestedViews);
+
 	static int ParseSequence(std::vector<int> &result, const std::string &text);
 };
 
