@@ -31,6 +31,8 @@ BEGIN_MESSAGE_MAP(CViewDialog, CDialog)
 #endif
 	ON_WM_SIZE()
 	ON_WM_CTLCOLOR()
+	ON_WM_ACTIVATE()
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 void CViewDialog::OnSize(UINT nType, int cx, int cy)
@@ -109,6 +111,20 @@ BOOL CViewDialog::OnInitDialog()
 	return TRUE;
 }
 
+void CViewDialog::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
+{
+	CDialog::OnActivate(nState, pWndOther, bMinimized);
+	
+	if (m_pModel) m_pModel->OnActivate(nState, pWndOther, bMinimized);
+}
+void CViewDialog::OnDestroy()
+{
+	if (m_pModel) m_pModel->BeforeDestroy();
+
+	CDialog::OnDestroy();
+}
+
+
 void CViewDialog::BindViewModel(DlgViewBoxItem *item)
 {
 	if(m_pModel)
@@ -150,6 +166,31 @@ LRESULT CViewDialog::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 					return 0;
 			}
 		}
+
+		LRESULT lResult = 0;
+		if ((message >= 0x0400) && (message <= 0x7FFF))
+		{
+			//WM_USER + n
+			if (m_pModel->On_WM_USER(message, wParam, lParam, lResult))
+				return lResult;
+		}
+		else
+		if ((message >= 0x8000) && (message <= 0xBFFF))
+		{
+			//WM_APP + n
+			if (m_pModel->On_WM_APP(message, wParam, lParam, lResult))
+				return lResult;
+		}
+		else
+		if ((message >= 0xC000) && (message <= 0xFFFF))
+		{
+			//got via RegisterWindowMessage
+			if (m_pModel->On_RegisteredWindowMessage(message, wParam, lParam, lResult))
+				return lResult;
+		}
+
+		if (m_pModel->WindowProc(message, wParam, lParam, lResult))
+			return lResult;
 	}
 
 	return CDialog::WindowProc(message, wParam, lParam);
@@ -159,7 +200,7 @@ BOOL CViewDialog::PreTranslateMessage(MSG* pMsg)
 {
 	if (pMsg->message == WM_KEYDOWN)
 	{
-		if (m_pModel->HasKeyDown())
+		if (m_pModel && m_pModel->HasKeyDown())
 		{
 			WORD nVK = (WORD)pMsg->wParam;
 			BYTE nScanCode = (BYTE)(pMsg->lParam >> 16);

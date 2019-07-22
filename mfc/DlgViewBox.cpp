@@ -35,30 +35,16 @@ layout::BoxItem* DlgViewBox::CreateItem(const std::string &element, const std::s
 {
 	DlgViewBoxItem *item = NULL;
 
-	if (element == "label")
-	{
-		item = CreateLabel(elemText, params);
-	}
-	else if (element == "edit")
-	{
-		item = CreateEdit(elemText, params);
-	}
-	else if (element == "group")
-	{
-		item = CreateGroup(elemText, params);
-	}
-	else if (element == "list")
-	{
-		item = CreateList(elemText, params);
-	}
-	else if (element == "button")
-	{
-		item = CreateButton(elemText, params);
-	}
-	else if (element == "radio")
-	{
-		item = CreateRadio(elemText, params);
-	}
+	if (element == "label")			item = CreateLabel(elemText, params);
+	else if (element == "edit")		item = CreateEdit(elemText, params);
+	else if (element == "group")	item = CreateGroup(elemText, params);
+	else if (element == "list")		item = CreateList(elemText, params);
+	else if (element == "table")	item = CreateTable(elemText, params);
+	else if (element == "button")	item = CreateButton(elemText, params);
+	else if (element == "radio")	item = CreateRadio(elemText, params);
+	else if (element == "check")	item = CreateCheck(elemText, params);
+	else if (element == "bitmap")	item = CreateBitmap(elemText, params);
+	else if (element == "progress")	item = CreateProgress(params);
 
 
 	if (item)
@@ -79,9 +65,6 @@ layout::BoxItem* DlgViewBox::CreateItem(const std::string &element, const std::s
 		item->m_Params = params;
 		params.find_value("name", item->m_Name);
 
-		//CViewController *pVC = GetController();
-		//if (pVC)
-		//	pVC->BindViewModel(item);
 		if (pDlg)
 			pDlg->BindViewModel(item);
 	}
@@ -165,7 +148,7 @@ DlgViewBoxItem* DlgViewBox::CreateLabel(const std::string &text, const lv::Param
 
 DlgViewBoxItem* DlgViewBox::CreateEdit(const std::string &text, const layout::view::Params &params)
 {
-	DWORD dwStyle = WS_CHILD | WS_VISIBLE | WS_BORDER | WS_TABSTOP;
+	DWORD dwStyle = WS_CHILD | WS_VISIBLE | WS_BORDER | WS_TABSTOP | ES_AUTOHSCROLL;
 	std::string style;
 	if (params.find_value("style", style))
 	{
@@ -220,6 +203,15 @@ DlgViewBoxItem* DlgViewBox::CreateList(const std::string &text, const layout::vi
 	return new DlgViewBoxItem(this, list, id);
 }
 
+DlgViewBoxItem* DlgViewBox::CreateTable(const std::string &text, const layout::view::Params &params)
+{
+	DWORD dwStyle = WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_BORDER | WS_TABSTOP;
+	UINT id = DlgViewBox::LAST_ID++;
+	CListCtrl *table = new CListCtrl();
+	table->Create(dwStyle, CRect(0,0,1,1), GetHostDlg(), id);
+	return new DlgViewBoxItem(this, table, id);
+}
+
 DlgViewBoxItem* DlgViewBox::CreateButton(const std::string &text, const layout::view::Params &params)
 {
 	MAKE_TCHAR(ptext, text.c_str())
@@ -240,3 +232,65 @@ DlgViewBoxItem* DlgViewBox::CreateRadio(const std::string &text, const layout::v
 	return new DlgViewBoxItem(this, radio, id);
 }
 
+DlgViewBoxItem* DlgViewBox::CreateCheck(const std::string &text, const layout::view::Params &params)
+{
+	MAKE_TCHAR(ptext, text.c_str())
+
+	UINT id = DlgViewBox::LAST_ID++;
+	CButton *check = new CButton();
+	check->Create(ptext, WS_CHILD | WS_VISIBLE | WS_TABSTOP | BS_AUTOCHECKBOX, CRect(0,0,1,1), GetHostDlg(), id);
+	return new DlgViewBoxItem(this, check, id);
+}
+
+DlgViewBoxItem* DlgViewBox::CreateBitmap(const std::string &text, const layout::view::Params &params)
+{
+	DWORD dwStyle = WS_CHILD | WS_VISIBLE | SS_BITMAP;
+	std::string border;
+	if (params.find_value("border", border))
+	{
+		if (0 == border.compare("sunken"))
+			dwStyle |= SS_SUNKEN;
+		else
+			dwStyle |= WS_BORDER;
+	}
+
+	std::string textalign;
+	if (params.find_value("align", textalign))
+	{
+		if (std::string::npos != textalign.find("mid"))
+			dwStyle |= SS_CENTERIMAGE;
+	}
+
+
+	MAKE_TCHAR(ptext, text.c_str())
+
+	UINT id = DlgViewBox::LAST_ID++;
+	CStatic *label = new CStatic();
+	label->Create(ptext, dwStyle, CRect(0,0,1,1), GetHostDlg(), id);
+	return new DlgViewBoxItem(this, label, id);
+}
+
+DlgViewBoxItem* DlgViewBox::CreateProgress(const layout::view::Params &params)
+{
+	DWORD dwStyle = WS_CHILD | WS_VISIBLE;
+	DWORD dwExStyle = 0;
+	std::string style;
+	if (params.find_value("style", style))
+	{
+		if (std::string::npos != style.find("smooth"))
+			dwStyle |= PBS_SMOOTH;
+	}
+	std::string border;
+	if (params.find_value("border", border))
+	{
+		if (std::string::npos != border.find("modal"))
+			dwExStyle |= WS_EX_DLGMODALFRAME;
+
+		dwStyle |= WS_BORDER;
+	}
+
+	UINT id = DlgViewBox::LAST_ID++;
+	CProgressCtrl *progress = new CProgressCtrl();
+	progress->CreateEx(dwExStyle, dwStyle, CRect(0,0,1,1), GetHostDlg(), id);
+	return new DlgViewBoxItem(this, progress, id);
+}

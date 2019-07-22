@@ -36,8 +36,12 @@ protected:
 	DlgViewBoxItem* CreateEdit(const std::string &text, const layout::view::Params &params);
 	DlgViewBoxItem* CreateGroup(const std::string &text, const layout::view::Params &params);
 	DlgViewBoxItem* CreateList(const std::string &text, const layout::view::Params &params);
+	DlgViewBoxItem* CreateTable(const std::string &text, const layout::view::Params &params);
 	DlgViewBoxItem* CreateButton(const std::string &text, const layout::view::Params &params);
 	DlgViewBoxItem* CreateRadio(const std::string &text, const layout::view::Params &params);
+	DlgViewBoxItem* CreateCheck(const std::string &text, const layout::view::Params &params);
+	DlgViewBoxItem* CreateBitmap(const std::string &text, const layout::view::Params &params);
+	DlgViewBoxItem* CreateProgress(const layout::view::Params &params);
 
 	GDI::CFontsCache m_fontsCahce;
 

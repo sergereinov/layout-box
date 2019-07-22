@@ -36,6 +36,16 @@ void CViewModel::ShowItem(DlgViewBoxItem *pItem, LPCTSTR lpszText)
 		pItem->m_pCtrl->ShowWindow(SW_SHOW);
 	}
 }
+void CViewModel::EnableItem(DlgViewBoxItem *pItem, BOOL bEnable)
+{
+	if (pItem && pItem->m_pCtrl)
+		pItem->m_pCtrl->EnableWindow(bEnable);
+}
+void CViewModel::SetFocus(DlgViewBoxItem *pItem)
+{
+	if (pItem && pItem->m_pCtrl)
+		pItem->m_pCtrl->SetFocus();
+}
 
 void CViewModelAuto::Bind(DlgViewBoxItem *item)
 {
