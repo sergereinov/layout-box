@@ -5,6 +5,14 @@
 * Any OS.
 * Any platform.
 
+<br/>
+<details>
+  <summary>Click to show demo GIF</summary>
+  
+  ![TestDrawDlg](/other/images/TestDrawDlg.gif)
+</details>
+<br/>
+
 Examples:
 - [layout::HBox](#layouthbox)
 - [layout::VBox](#layoutvbox)
